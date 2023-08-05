@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
-import field_controller from "../modules/field_controller.js";
+import field_controller from "../modules/field/field_controller.js";
+import auth_controller from "../modules/auth/auth_controller.js";
 import config from "../config/config.js";
 import morgan from "morgan";
 import { notFoundError, serverError } from "../utils/errorsHandler.js";
@@ -21,10 +22,11 @@ if (config.NODE_ENV !== "development") {
   app.use(express.json());
 
   //cors middleware
-  app.use(cors({ origin: "http://localhost:3000" }));
+  app.use(cors({ origin: "http://localhost:5173" }));
 
   // adding controllers to the server
   app.use("/api/v1/field", field_controller);
+  app.use("/api/v1/auth", auth_controller);
 
   //handle common errors
   app.use(notFoundError);
