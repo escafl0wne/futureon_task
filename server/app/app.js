@@ -6,6 +6,8 @@ import config from "../config/config.js";
 import morgan from "morgan";
 import { notFoundError, serverError } from "../utils/errorsHandler.js";
 import process from "process";
+import logger from "../utils/logger.js";
+import expressWinston from "express-winston";
 
 
 //check the environment
@@ -17,6 +19,12 @@ if (config.NODE_ENV !== "development") {
 
   //middlewares
   app.use(morgan("dev")); // add some measuring metada to the log
+
+  //logger
+  app.use(expressWinston.logger({
+    winstonInstance: logger,
+    statusLevels: true,
+  }))
 
   //json parsing
   app.use(express.json());
