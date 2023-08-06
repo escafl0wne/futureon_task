@@ -1,13 +1,14 @@
-import {useState} from "react"
-import axios from "axios"
-import {useNavigate} from "react-router-dom"
-import "./login.css"
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "./login.css";
 const Login = () => {
-    const navigate = useNavigate();
-const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isEmailValid, setIsEmailValid] = useState(true);
-    
+  const [error,setError] = useState(null)
+
   const handleLogin = async (e) => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -15,17 +16,24 @@ const [email, setEmail] = useState('');
     setIsEmailValid(isValid);
 
     if (isValid) {
-        const authResponse = await axios.post("http://localhost:5012/api/v1/auth/login",{password,email},{headers:{"auth-token":password}})
-        if(authResponse.status ===200){
-            
-            localStorage.setItem("auth",authResponse.data.body)
-            navigate("/")
+      try {
+        const authResponse = await axios.post(
+          "http://localhost:5012/api/v1/auth/login",
+          { password, email },
+          { headers: { "auth-token": password } }
+        );
+        if (authResponse.status === 200) {
+          localStorage.setItem("auth", authResponse.data.body);
+          navigate("/");
         }
-
-        }
-    
+      } catch (error) {
+        setEmail("")
+        setPassword("")
+        setError(error.response.data.message)
+      }
+    }
   };
-//   if(auth) return <Navigate to="/"/>
+  //   if(auth) return <Navigate to="/"/>
   return (
     <div className="login-container">
       <div className="login-form">
@@ -41,8 +49,10 @@ const [email, setEmail] = useState('');
               required
             />
           </div>
-          {!isEmailValid && <p className="error-message">Invalid email format</p>}
-          
+          {!isEmailValid && (
+            <p className="error-message">Invalid email format</p>
+          )}
+
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <input
@@ -53,11 +63,12 @@ const [email, setEmail] = useState('');
               required
             />
           </div>
-          <button type="submit" >Login</button>
+          {error && <p>{error}</p>}
+          <button type="submit">Login</button>
         </form>
       </div>
     </div>
   );
 };
 
-export default Login
+export default Login;

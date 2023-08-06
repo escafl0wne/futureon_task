@@ -12,12 +12,12 @@ export default class AuthService{
     try {
         const {password,email} = req.body
         console.log(req.body)
-        if(password !== config.API_TOKEN) throw Error("Password is incorect")
-        if(email !== "futureon@test.com") throw Error("Email is wrong")
+        if(password !== config.API_TOKEN) throw Error()
+        if(email !== "futureon@test.com") throw Error()
         res.json({"message":"User authorised OK","body":config.API_TOKEN})
     } catch (error) {
         console.log(error)
-        res.send(error)
+        res.status(404).json({"message":"Wrong Credentials","body":error})
     }
        
 

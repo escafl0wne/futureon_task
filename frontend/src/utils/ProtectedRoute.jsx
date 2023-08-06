@@ -2,10 +2,10 @@ import {Outlet,Navigate} from 'react-router-dom'
 
 const ProtectedRoute=()=>{
     let auth = localStorage.getItem("auth")
-    console.log(auth)
+
 
     return (
-        auth !== process.env.REACT_APP_AUTH ? <Navigate to="/login"/> : <Outlet/>
+        !auth || auth.length !== 36 && auth.split("-")[3] !== "8cf2" ? <Navigate to="/login"/> : <Outlet/>
     )
 }
 
